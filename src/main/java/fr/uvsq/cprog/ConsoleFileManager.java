@@ -58,7 +58,7 @@ public class ConsoleFileManager {
                     }
                     break;
                 case "visu":
-                    //viewFile(NER);
+                    viewFile(NER);
                     break;
                 case "find":
                     if (parts.length > 1) {
@@ -69,16 +69,16 @@ public class ConsoleFileManager {
                     }
                     break;
                 case "+":
-                    //annotateER(NER, parts);
+                    annotateER(NER, parts);
                     break;
                 case "-":
-                    //removeAnnotation(NER);
+                    removeAnnotation(NER);
                     break;
                 case " ":
-                    //designateElement(NER);
+                    designateElement(NER);
                     break;
                 case "help":
-                   // displayHelp();
+                    displayHelp();
                     break;
                 default:
                     Output = "Unrecognized command.";
@@ -305,6 +305,124 @@ public class ConsoleFileManager {
             Output = "Error creating directory.";
             System.out.println(Output);
         }
+    }
+    private void viewFile(int NER) {
+        String filePath = getPathByNER(NER);
+
+        if (filePath != null) {
+            File targetFile = new File(filePath);
+
+            if (targetFile.isFile()) {
+                String fileName = targetFile.getName();
+
+                if (fileName.endsWith(".txt") || fileName.endsWith(".text")) {
+
+                    try{
+                        InputStream ips=new FileInputStream(targetFile);
+                        InputStreamReader ipsr=new InputStreamReader(ips);
+                        BufferedReader br=new BufferedReader(ipsr);
+                        String ligne;
+                        while ((ligne=br.readLine())!=null){
+                            System.out.println(ligne);
+                        }
+                        br.close();
+                    }
+                    catch (IOException e) {
+                        Output = "Error reading file: " + e.getMessage();
+                        System.out.println(Output);
+                    }
+                    if (Output.isEmpty()){Output ="Empty file";}
+                } else {
+                    Output = "The file is not a text type. Displaying size: " + targetFile.length() + " bytes";
+                    System.out.println(Output);
+                }
+            } else {
+                Output = "The element corresponding to NER is not a file.";
+                System.out.println(Output);
+            }
+        } else {
+            Output = "File not found for NER " + NER;
+            System.out.println(Output);
+        }
+    }
+    private void annotateER(int NER, String[] parts) {
+        String filePath = getPathByNER(NER);
+        if (filePath != null) {
+            File targetFile = new File(filePath);
+
+            if (targetFile.isFile()) {
+                String annotationText = String.join(" ", Arrays.copyOfRange(parts, 2, parts.length));
+
+                try (FileWriter writer = new FileWriter(filePath, true);
+                     BufferedWriter bw = new BufferedWriter(writer)) {
+                    bw.write(annotationText);
+                    Output = "Annotation added successfully to NER " + NER;
+                    System.out.println(Output);
+                } catch (IOException e) {
+                    Output = "Error adding annotation: " + e.getMessage();
+                    System.out.println(Output);
+                }
+            } else {
+                Output = "The element corresponding to NER is not a file.";
+                System.out.println(Output);
+            }
+        } else {
+            Output = "File not found for NER " + NER;
+            System.out.println(Output);
+        }
+    }
+    private void removeAnnotation(int NER) {
+        String filePath = getPathByNER(NER);
+        if (filePath != null) {
+            File targetFile = new File(filePath);
+
+            if (targetFile.isFile()) {
+                try (FileWriter ignored = new FileWriter(filePath, false)) {
+                    Output = "Annotation removed successfully from NER " + NER;
+                    System.out.println(Output);
+                } catch (IOException e) {
+                    Output = "Error removing annotation: " + e.getMessage();
+                    System.out.println(Output);
+                }
+            } else {
+                Output = "The element corresponding to NER is not a file.";
+                System.out.println(Output);
+            }
+        } else {
+            Output = "File not found for NER " + NER;
+            System.out.println(Output);
+        }
+    }
+    private void designateElement(int NER) {
+        String targetPath = getPathByNER(NER);
+
+        if (targetPath != null) {
+            File targetElement = new File(targetPath);
+
+            if (targetElement.exists()) {
+                Output = "User designates element number " + NER + ": " + targetElement.getName();
+                System.out.println(Output);
+            } else {
+                Output = "Element not found for NER " + NER;
+                System.out.println(Output);
+            }
+        } else {
+            Output = "Element not found for NER " + NER;
+            System.out.println(Output);
+        }
+    }
+    private void displayHelp() {
+        System.out.println("Les commandes du gestion de fichiers à implémenter sont:");
+        System.out.println("[<NER>] copy");
+        System.out.println("past ; si l’élément existe, alors le nom du nouvel élément sera concaténé avec \"-copy\"");
+        System.out.println("[<NER>] cut");
+        System.out.println(".. ; pour remonter d’un cran dans le système de fichiers");
+        System.out.println("[<NER>] . ; pour entrer dans un répertoire à condition que le NER désigne un répertoire. Exemple \"4 .\"");
+        System.out.println("mkdir <nom> ; pour créer un répertoire");
+        System.out.println("[<NER>] visu ; permet de voir le contenu d’un fichier texte. Si le fichier n’est pas de type texte, vous afficherez sa taille.");
+        System.out.println("find <nom fichier> ; Recherche dans toutes les sous-répertoires du répertoire courant, le(s) fichier(s) et les affiche.");
+        System.out.println("3 + \"ceci est un texte\" ; le texte est ajouté ou concaténé au texte existant sur l’ER");
+        System.out.println("3 - ; retire tout le texte associé à l’ER 3");
     }
 
 }
