@@ -1,0 +1,20 @@
+<configuration>
+
+    <!-- Appender pour la console -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- Paramètres de niveau de journalisation pour le package fr.uvsq.cprog -->
+    <logger name="fr.uvsq.cprog" level="debug" additivity="false">
+        <appender-ref ref="CONSOLE" />
+    </logger>
+
+    <!-- Paramètres de niveau de journalisation pour les autres packages -->
+    <root level="info">
+        <appender-ref ref="CONSOLE" />
+    </root>
+
+</configuration>

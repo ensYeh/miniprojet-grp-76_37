@@ -1,5 +1,8 @@
 package fr.uvsq.cprog;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
@@ -9,6 +12,7 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public class ConsoleFileManager {
+    private static final Logger logger = LoggerFactory.getLogger(ConsoleFileManager.class);
     private Directory currentDirectory;
     private int lastNER;
     private String copiedFilePath;
@@ -54,6 +58,7 @@ public class ConsoleFileManager {
                         createDirectory(parts[1]);
                     } else {
                         Output = "Missing directory name.";
+                        logger.info(Output);
                         System.out.println(Output);
                     }
                     break;
@@ -219,7 +224,7 @@ public class ConsoleFileManager {
                     System.out.println(Output);
                 }
             } else {
-                Output = "File or directory not found for NER " + NER;
+                Output = "File or directory not found for NER" + NER;
                 System.out.println(Output);
             }
         } else {
@@ -244,6 +249,7 @@ public class ConsoleFileManager {
             for (File file : files) {
                 if (file.getName().equals(fileName)) {
                     Output = file.getAbsolutePath();
+                    System.out.println(Output);
                     return; // Ajout pour arrêter la recherche une fois le fichier trouvé
                 }
                 if (file.isDirectory()) {

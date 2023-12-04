@@ -1,11 +1,12 @@
 package fr.uvsq.cprog;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
         // Define the root directory path (replace it with your desired path)
-        String rootPath = "..\\Root";
+        String rootPath = ".\\Root";
 
         // Create an instance of the console file manager with the root directory path
         ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
