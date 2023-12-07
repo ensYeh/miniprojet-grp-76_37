@@ -20,6 +20,7 @@ buildNumber.properties
 
 # Fichiers générés par Maven Wrapper
 .mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/*
 
 # Fichiers de configuration spécifiques à l'utilisateur
 .mvn/timing.properties
