@@ -1,29 +1,30 @@
 package fr.uvsq.cprog;
 
 
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
 
 public class ConsoleFileManager {
     private static final Logger logger = LoggerFactory.getLogger(ConsoleFileManager.class);
-    private Directory currentDirectory;
+    protected Directory currentDirectory;
     private int lastNER;
     private String copiedFilePath;
-    public String Output = "" ;
+    public String Output = "";
+
     public void processCommand(String command) {
         String[] parts = command.split(" ");
         int NER;
         String cmd;
 
         cmd = parts[0].toLowerCase();
-        if (parts.length > 0 && parts[0].matches("\\d+")) {
+        if (parts[0].matches("\\d+")) {
             try {
                 NER = Integer.parseInt(parts[0]);
                 cmd = (parts.length > 1) ? parts[1].toLowerCase() : " ";
@@ -35,7 +36,6 @@ public class ConsoleFileManager {
         } else {
             NER = lastNER;
         }
-
         if (!cmd.isEmpty()) {
             switch (cmd) {
                 case "copy":
@@ -70,6 +70,7 @@ public class ConsoleFileManager {
                         findFile(parts[1]);
                     } else {
                         Output = "Missing file name.";
+                        logger.info(Output);
                         System.out.println(Output);
                     }
                     break;
@@ -87,21 +88,26 @@ public class ConsoleFileManager {
                     break;
                 default:
                     Output = "Unrecognized command.";
+                    logger.info(Output);
                     System.out.println(Output);
                     break;
             }
         } else if (parts.length == 1 && parts[0].equalsIgnoreCase("mkdir")) {
             Output = "Missing directory name.";
+            logger.info(Output);
             System.out.println(Output);
         } else {
             Output = "Incomplete command.";
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     public ConsoleFileManager(String rootPath) {
         this.currentDirectory = new Directory(0, "Root", rootPath);
         lastNER = 0;
     }
+
     private String getPathByNER(int NER) {
         File[] files = new File(currentDirectory.getPath()).listFiles();
 
@@ -116,30 +122,40 @@ public class ConsoleFileManager {
         }
         return null;
     }
-    public List<String> displayCurrentDirectory() {
-        // Afficher le chemin du répertoire courant
-        System.out.println("Current Directory: " + currentDirectory.getPath());
 
-        List<String> contentList = new ArrayList<>();
+    public void displayCurrentDirectory() {
+        // Afficher le chemin du répertoire courant
+        int rootTestIndex = currentDirectory.getPath().indexOf("Root");
+
+        // Si "RootTest" est trouvé, extraire la sous-chaîne à partir de cet index
+        String outputPath = "";
+        if (rootTestIndex != -1) {
+            outputPath = currentDirectory.getPath().substring(rootTestIndex);
+        }
+        System.out.println("Current Directory: " + outputPath);
+
         File[] files = new File(currentDirectory.getPath()).listFiles();
 
         if (files != null) {
             int ner = 1;
-            System.out.printf("%-" + 5 + "s \t %-" + 30 + "s \t TYPE%n","NER","NOM");
+            System.out.printf("%-" + 5 + "s \t %-" + 30 + "s \t TYPE%n", "NER", "NOM");
+            // logger.info("%-" + 5 + "s \t %-" + 30 + "s \t TYPE%n", "NER", "NOM");
             for (File file : files) {
                 if (file.isDirectory()) {
                     System.out.printf("%-" + 5 + "s \t %-" + 30 + "s \t (directory)%n", ner, file.getName());
+                    //logger.info("%-" + 5 + "s \t %-" + 30 + "s \t (directory)%n", ner, file.getName());
                 } else {
                     System.out.printf("%-" + 5 + "s \t %-" + 30 + "s \t (file)%n", ner, file.getName());
+                    //  logger.info("%-" + 5 + "s \t %-" + 30 + "s \t (file)%n", ner, file.getName());
                 }
                 ner++;
             }
         } else {
             System.out.println("Error retrieving directory items.");
+            logger.info(Output);
         }
-
-        return contentList;
     }
+
     private void copyFile(int NER) {
         String sourceFilePath = getPathByNER(NER);
         if (sourceFilePath != null) {
@@ -150,59 +166,63 @@ public class ConsoleFileManager {
                 String newFileName = fileName + "-copy" + fileExtension;
                 copiedFilePath = sourceFile.getAbsolutePath();
 
-                Output = "File copied successfully. New file: " + newFileName ;
+                Output = "File copied successfully. New file: " + newFileName;
+                logger.info(Output);
                 System.out.println(Output);
             } else {
                 Output = "The element corresponding to NER is not a file.";
+                logger.info(Output);
                 System.out.println(Output);
             }
         } else {
             Output = "File not found for NER " + NER;
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void pasteFile() {
         if (copiedFilePath != null) {
             String sourceFilePath = copiedFilePath;
 
-            if (sourceFilePath != null) {
-                File sourceFile = new File(sourceFilePath);
-                if (sourceFile.isFile()) {
-                    String fileName = sourceFile.getName().replaceFirst("[.][^.]+$", "");
-                    String fileExtension = sourceFile.getName().substring(sourceFile.getName().lastIndexOf("."));
-                    String newFileName = fileName + "-copy" + fileExtension;
-                    String currentPath = currentDirectory.getPath();
+            File sourceFile = new File(sourceFilePath);
+            if (sourceFile.isFile()) {
+                String fileName = sourceFile.getName().replaceFirst("[.][^.]+$", "");
+                String fileExtension = sourceFile.getName().substring(sourceFile.getName().lastIndexOf("."));
+                String newFileName = fileName + "-copy" + fileExtension;
+                String currentPath = currentDirectory.getPath();
 
-                    String newFilePath = Paths.get(currentPath, newFileName).toString();
+                String newFilePath = Paths.get(currentPath, newFileName).toString();
 
-                    try (InputStream inStream = new FileInputStream(sourceFile);
-                         OutputStream outStream = new FileOutputStream(newFilePath)) {
+                try (InputStream inStream = new FileInputStream(sourceFile);
+                     OutputStream outStream = new FileOutputStream(newFilePath)) {
 
-                        byte[] buffer = new byte[1024];
-                        int length;
-                        while ((length = inStream.read(buffer)) > 0) {
-                            outStream.write(buffer, 0, length);
-                        }
-
-                        Output = "File pasted successfully." ;
-                        System.out.println(Output);
-                    } catch (IOException e) {
-                        Output = "Error pasting file: " + e.getMessage() ;
-                        System.out.println(Output);
+                    byte[] buffer = new byte[1024];
+                    int length;
+                    while ((length = inStream.read(buffer)) > 0) {
+                        outStream.write(buffer, 0, length);
                     }
-                } else {
-                    Output = "The copied element is not a file.";
+
+                    Output = "File pasted successfully.";
+                    logger.info(Output);
+                    System.out.println(Output);
+                } catch (IOException e) {
+                    Output = "Error pasting file: " + e.getMessage();
+                    logger.error(Output);
                     System.out.println(Output);
                 }
             } else {
-                Output = "Copied file not found.";
+                Output = "The copied element is not a file.";
+                logger.info(Output);
                 System.out.println(Output);
             }
         } else {
-            Output = "No file has been copied previously.";
+            Output = "Copied file not found.";
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void cutFile(int NER) {
         String path = getPathByNER(NER);
         if (path != null) {
@@ -213,14 +233,17 @@ public class ConsoleFileManager {
                     if (fileOrDirectory.isFile()) {
                         Files.deleteIfExists(Paths.get(path));
                         Output = "File deletion successful.";
+                        logger.info(Output);
                         System.out.println(Output);
                     } else if (fileOrDirectory.isDirectory()) {
                         FileUtils.deleteDirectory(fileOrDirectory);
                         Output = "Directory deletion successful.";
+                        logger.info(Output);
                         System.out.println(Output);
                     }
                 } catch (IOException e) {
                     Output = "Error deleting: " + e.getMessage();
+                    logger.error(Output);
                     System.out.println(Output);
                 }
             } else {
@@ -229,17 +252,21 @@ public class ConsoleFileManager {
             }
         } else {
             Output = "File or directory not found for NER " + NER;
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     public void findFile(String fileName) {
-        Output = "" ;
+        Output = "";
         findFileRecursive(currentDirectory.getPath(), fileName);
         if (Output == null || Output.isEmpty()) {
             Output = "File not found: " + fileName;
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void findFileRecursive(String directoryPath, String fileName) {
         File directory = new File(directoryPath);
 
@@ -249,6 +276,7 @@ public class ConsoleFileManager {
             for (File file : files) {
                 if (file.getName().equals(fileName)) {
                     Output = file.getAbsolutePath();
+                    logger.info(Output);
                     System.out.println(Output);
                     return; // Ajout pour arrêter la recherche une fois le fichier trouvé
                 }
@@ -258,9 +286,11 @@ public class ConsoleFileManager {
             }
         }
     }
+
     private void navigateUp() {
         if (currentDirectory.getPath().equals("Root")) {
             Output = "Already at the root.";
+            logger.info(Output);
             System.out.println(Output);
             return;
         }
@@ -268,13 +298,15 @@ public class ConsoleFileManager {
         String parentPath = currentDirectory.getPath();
         File parentFile = new File(parentPath).getParentFile();
 
-        if (parentFile != null &&  !parentPath.endsWith("Root") ) {
+        if (parentFile != null && !parentPath.endsWith("Root")) {
             currentDirectory = new Directory(0, parentFile.getName(), parentFile.getAbsolutePath());
         } else {
             Output = "Already at the root.";
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void navigateIntoDirectory(int NER) {
         String targetDirectoryPath = getPathByNER(NER);
 
@@ -284,13 +316,16 @@ public class ConsoleFileManager {
                 currentDirectory.setPath(targetDirectoryPath);
             } else {
                 Output = "The element corresponding to NER is a file, not a directory.";
+                logger.info(Output);
                 System.out.println(Output);
             }
         } else {
             Output = "Directory not found.";
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void createDirectory(String name) {
         int newNER = currentDirectory.getElements().size() + 1;
         Directory newDirectory = new Directory(newNER, name, currentDirectory.getPath());
@@ -306,12 +341,15 @@ public class ConsoleFileManager {
             Files.createFile(notesFilePath);
 
             Output = "Directory created successfully. notes.txt created.";
+            logger.info(Output);
             System.out.println(Output);
         } catch (IOException e) {
             Output = "Error creating directory.";
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void viewFile(int NER) {
         String filePath = getPathByNER(NER);
 
@@ -323,34 +361,41 @@ public class ConsoleFileManager {
 
                 if (fileName.endsWith(".txt") || fileName.endsWith(".text")) {
 
-                    try{
-                        InputStream ips=new FileInputStream(targetFile);
-                        InputStreamReader ipsr=new InputStreamReader(ips);
-                        BufferedReader br=new BufferedReader(ipsr);
+                    try {
+                        InputStream ips = new FileInputStream(targetFile);
+                        InputStreamReader ipsr = new InputStreamReader(ips);
+                        BufferedReader br = new BufferedReader(ipsr);
                         String ligne;
-                        while ((ligne=br.readLine())!=null){
+                        while ((ligne = br.readLine()) != null) {
+                            Output += ligne;
                             System.out.println(ligne);
                         }
                         br.close();
-                    }
-                    catch (IOException e) {
+                    } catch (IOException e) {
                         Output = "Error reading file: " + e.getMessage();
+                        logger.error(Output);
                         System.out.println(Output);
                     }
-                    if (Output.isEmpty()){Output ="Empty file";}
+                    if (Output.isEmpty()) {
+                        Output = "Empty file";
+                    }
                 } else {
                     Output = "The file is not a text type. Displaying size: " + targetFile.length() + " bytes";
+                    logger.info(Output);
                     System.out.println(Output);
                 }
             } else {
                 Output = "The element corresponding to NER is not a file.";
+                logger.info(Output);
                 System.out.println(Output);
             }
         } else {
             Output = "File not found for NER " + NER;
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void annotateER(int NER, String[] parts) {
         String filePath = getPathByNER(NER);
         if (filePath != null) {
@@ -363,20 +408,25 @@ public class ConsoleFileManager {
                      BufferedWriter bw = new BufferedWriter(writer)) {
                     bw.write(annotationText);
                     Output = "Annotation added successfully to NER " + NER;
+                    logger.info(Output);
                     System.out.println(Output);
                 } catch (IOException e) {
                     Output = "Error adding annotation: " + e.getMessage();
+                    logger.error(Output);
                     System.out.println(Output);
                 }
             } else {
                 Output = "The element corresponding to NER is not a file.";
+                logger.info(Output);
                 System.out.println(Output);
             }
         } else {
             Output = "File not found for NER " + NER;
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void removeAnnotation(int NER) {
         String filePath = getPathByNER(NER);
         if (filePath != null) {
@@ -385,20 +435,25 @@ public class ConsoleFileManager {
             if (targetFile.isFile()) {
                 try (FileWriter ignored = new FileWriter(filePath, false)) {
                     Output = "Annotation removed successfully from NER " + NER;
+                    logger.info(Output);
                     System.out.println(Output);
                 } catch (IOException e) {
                     Output = "Error removing annotation: " + e.getMessage();
+                    logger.error(Output);
                     System.out.println(Output);
                 }
             } else {
                 Output = "The element corresponding to NER is not a file.";
+                logger.info(Output);
                 System.out.println(Output);
             }
         } else {
             Output = "File not found for NER " + NER;
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void designateElement(int NER) {
         String targetPath = getPathByNER(NER);
 
@@ -407,16 +462,20 @@ public class ConsoleFileManager {
 
             if (targetElement.exists()) {
                 Output = "User designates element number " + NER + ": " + targetElement.getName();
+                logger.info(Output);
                 System.out.println(Output);
             } else {
                 Output = "Element not found for NER " + NER;
+                logger.info(Output);
                 System.out.println(Output);
             }
         } else {
             Output = "Element not found for NER " + NER;
+            logger.info(Output);
             System.out.println(Output);
         }
     }
+
     private void displayHelp() {
         System.out.println("Les commandes du gestion de fichiers à implémenter sont:");
         System.out.println("[<NER>] copy");
