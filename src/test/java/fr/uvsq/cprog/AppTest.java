@@ -12,14 +12,14 @@ class AppTest {
     @Test
     void processCommand_CopyFile_Success() {
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         fileManager.processCommand("2 copy");
         assertEquals("File copied successfully. New file: file-copy.txt", fileManager.Output);
     }
 
     @Test
     void processCommand_PasteFile_Success() {
-        ConsoleFileManager fileManager = new ConsoleFileManager("..\\RootTest");
+        ConsoleManager fileManager = new ConsoleManager("..\\RootTest");
         fileManager.processCommand("2 copy");
         fileManager.processCommand("past");
         assertEquals("File pasted successfully.", fileManager.Output);
@@ -29,7 +29,7 @@ class AppTest {
     void processCommand_PasteFile_Success_navigate() throws IOException {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Copy the file
         fileManager.processCommand("2 copy");
         // Navigate to another directory
@@ -42,7 +42,7 @@ class AppTest {
 
     @Test
     void processCommand_UnrecognizedCommand() {
-        ConsoleFileManager fileManager = new ConsoleFileManager("..\\RootTest");
+        ConsoleManager fileManager = new ConsoleManager("..\\RootTest");
         fileManager.processCommand("invalid");
         assertEquals("Unrecognized command.", fileManager.Output);
     }
@@ -51,7 +51,7 @@ class AppTest {
     void createDirectory_Success() {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Act
         fileManager.processCommand("mkdir NewDirectory");
         // Assert
@@ -62,7 +62,7 @@ class AppTest {
     void processCommand_NavigateUp_Success() {
         // Arrange
         String rootPath = "..\\Root";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Act
         fileManager.processCommand("..");
         // Assert
@@ -74,7 +74,7 @@ class AppTest {
         // Arrange
         String rootPath = "..\\RootTest";
 
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Create a directory to navigate into
         Path directoryPath = Paths.get(rootPath, "Dir");
         int rootTestI = directoryPath.toString().indexOf("RootTest");
@@ -99,7 +99,7 @@ class AppTest {
     void processCommand_CreateDirectory_MissingName() {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Act
         fileManager.processCommand("mkdir");
         // Assert - Check if an error message is displayed

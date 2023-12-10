@@ -16,7 +16,7 @@ class FileTest {
     void processCommand_ViewFile_Success() throws IOException {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Act
         fileManager.processCommand("2 visu");
         assertEquals("azzzzzzzzzzzzzzzz", fileManager.Output);
@@ -26,7 +26,7 @@ class FileTest {
     void processCommand_ViewDirectory() throws IOException {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
 
         // Act
         fileManager.processCommand("1 visu");
@@ -39,7 +39,7 @@ class FileTest {
     void processCommand_ViewNonExistentFile() throws IOException {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
 
         // Act
         fileManager.processCommand("10 visu");
@@ -52,7 +52,7 @@ class FileTest {
     void processCommand_ViewEmptyTextFile_Success() throws IOException {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
 
         // Act
         fileManager.processCommand("3 visu");
@@ -64,7 +64,7 @@ class FileTest {
     void processCommand_AnnotateER_Success() throws IOException {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Create a text file to annotate
         Path filePath = Paths.get(rootPath, "TestFile.txt");
         // Act
@@ -77,7 +77,7 @@ class FileTest {
     void processCommand_RemoveAnnotation_Success() throws IOException {
         // Arrange
         String rootPath = "..\\RootTest";
-        ConsoleFileManager fileManager = new ConsoleFileManager(rootPath);
+        ConsoleManager fileManager = new ConsoleManager(rootPath);
         // Create a text file with an annotation
         Path filePath = Paths.get(rootPath, "TestFile.txt");
         // Act
