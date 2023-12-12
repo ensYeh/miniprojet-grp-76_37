@@ -7,16 +7,17 @@ public class ConsoleManager {
     protected DirectoryManager currentDirectory;
     public int lastNER;
     public String Output = "";
+    public String Annot = "";
     private String operation = ""; // Soit copy, Soit cut pour la faire passer dans pastFile à fin de savoir si on supprime le fichier copié ou non
     Object[] copiedFile = new Object[2]; // Stocker path et NER du fichier copier
-    private final FileManager fileElement;
+    private final FileManager fileManager;
     private final AnnotationManager annotationManager;
     private final DirectoryManager directoryManager;
 
     public ConsoleManager(String rootPath) {
         this.currentDirectory = new DirectoryManager(0, rootPath, this);
         lastNER = 0;
-        this.fileElement = new FileManager(rootPath, this);
+        this.fileManager = new FileManager(rootPath, this);
         this.annotationManager = new AnnotationManager(this);
         this.directoryManager = new DirectoryManager(0, rootPath, this);
     }
@@ -43,31 +44,41 @@ public class ConsoleManager {
             switch (cmd) {
                 case "copy":
                     operation = "copy";
-                    fileElement.copyFile(NER);
+                    fileManager.copyFile(NER);
+                    Output = fileManager.Output;
+                    Annot = fileManager.Annot;
                     break;
                 case "cut":
                     operation = "cut";
-                    fileElement.copyFile(NER);
+                    fileManager.copyFile(NER);
+                    Output = fileManager.Output;
+                    Annot = fileManager.Annot;
                     break;
                 case "past":
-                    fileElement.pasteFile(operation);
+                    fileManager.pasteFile(operation);
+                    Output = fileManager.Output;
+                    Annot = fileManager.Annot;
                     break;
                 case "..":
                     directoryManager.navigateUp();
+                    Output = directoryManager.Output;
                     break;
                 case ".":
                     directoryManager.navigateIntoDirectory(NER);
+                    Output = directoryManager.Output;
                     break;
                 case "mkdir":
                     if (parts.length > 1) {
                         directoryManager.createDirectory(parts[1]);
+                        Output = directoryManager.Output;
                     } else {
                         Output = "Missing directory name.";
                         System.out.println(Output);
                     }
                     break;
                 case "visu":
-                    fileElement.viewFile(NER);
+                    fileManager.viewFile(NER);
+                    Output = fileManager.Output;
                     break;
                 case "find":
                     if (parts.length > 1) {
@@ -81,6 +92,7 @@ public class ConsoleManager {
                     if (parts.length > 2) {
                         String annotationText = String.join(" ", Arrays.copyOfRange(parts, 2, parts.length));
                         annotationManager.annotateER(NER, annotationText);
+                        Output = annotationManager.Output;
                     } else {
                         Output = "Missing annotation text.";
                         System.out.println(Output);
@@ -88,6 +100,7 @@ public class ConsoleManager {
                     break;
                 case "-":
                     annotationManager.removeAnnotation(NER);
+                    Output = annotationManager.Output;
                     break;
                 case " ":
                     designateElement(NER);
@@ -128,7 +141,7 @@ public class ConsoleManager {
         // Afficher le chemin du répertoire courant
         int rootTestIndex = currentDirectory.getPath().indexOf("Root");
 
-        // Si "RootTest" est trouvé, extraire la sous-chaîne à partir de cet index
+        // Si "Root" est trouvé, extraire la sous-chaîne à partir de cet index
         String outputPath = "";
         if (rootTestIndex != -1) {
             outputPath = currentDirectory.getPath().substring(rootTestIndex);
@@ -164,13 +177,16 @@ public class ConsoleManager {
 
     public void findFileRecursive(String directoryPath, String fileName) {
         File directory = new File(directoryPath);
-
         File[] files = directory.listFiles();
-
         if (files != null) {
             for (File file : files) {
                 if (file.getName().equals(fileName)) {
                     Output = file.getAbsolutePath();
+                    int rootTestIndex = currentDirectory.getPath().indexOf("Root");
+                    // Si "Root" est trouvé, extraire la sous-chaîne à partir de cet index
+                    if (rootTestIndex != -1) {
+                        Output = Output.substring(rootTestIndex);
+                    }
                     System.out.println(Output);
                     return; // Ajout pour arrêter la recherche une fois le fichier trouvé
                 }

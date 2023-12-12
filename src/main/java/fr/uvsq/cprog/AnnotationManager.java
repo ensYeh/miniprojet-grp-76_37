@@ -6,30 +6,32 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 public class AnnotationManager {
 
-    private final ConsoleManager fileManager;
+    private final ConsoleManager consoleManager;
     private static final Logger logger = LoggerFactory.getLogger(ConsoleManager.class);
     public String Output = "";
 
     public AnnotationManager(ConsoleManager fileManager) {
-        this.fileManager = fileManager;
+        this.consoleManager = fileManager;
     }
 
     public void annotateER(int NER, String annotationText) {
-        String currentDirectoryPath = fileManager.currentDirectory.getPath();
+        String currentDirectoryPath = consoleManager.currentDirectory.getPath();
         String notesFilePath = Paths.get(currentDirectoryPath, "notes.txt").toString();
-        String targetPath = fileManager.getPathByNER(NER);
+        String targetPath = consoleManager.getPathByNER(NER);
         String fileName = targetPath != null ? new File(targetPath).getName() : null;
         String lineNumberPrefix = fileName + " ";
 
         if (targetPath != null) {
             try {
-                List<String> lines = Files.readAllLines(Paths.get(notesFilePath));
+                Path path = Paths.get(notesFilePath);
+                List<String> lines = Files.readAllLines(path);
                 // Vérifier si le NER existe déjà dans le fichier notes.txt
                 boolean nerExistsInNotes = lines.stream().anyMatch(line -> line.startsWith(lineNumberPrefix));
                 if (nerExistsInNotes) {
@@ -45,7 +47,7 @@ public class AnnotationManager {
                     lines.add(lineNumberPrefix + annotationText);
                 }
                 // Réécrire le fichier avec les mises à jour
-                Files.write(Paths.get(notesFilePath), lines, StandardOpenOption.TRUNCATE_EXISTING);
+                Files.write(path, lines, StandardOpenOption.TRUNCATE_EXISTING);
                 Output = "Annotation added to notes.txt for NER " + NER + " in the current directory.";
                 System.out.println(Output);
             } catch (IOException e) {
@@ -59,14 +61,16 @@ public class AnnotationManager {
     }
 
     public void removeAnnotation(int NER) {
-        String currentDirectoryPath = fileManager.currentDirectory.getPath();
+        String currentDirectoryPath = consoleManager.currentDirectory.getPath();
         String notesFilePath = Paths.get(currentDirectoryPath, "notes.txt").toString();
-        String targetPath = fileManager.getPathByNER(NER);
+        String targetPath = consoleManager.getPathByNER(NER);
         String fileName = targetPath != null ? new File(targetPath).getName() : null;
         String lineNumberPrefix = fileName + " ";
 
+
         try {
-            List<String> lines = Files.readAllLines(Paths.get(notesFilePath));
+            Path path = Paths.get(notesFilePath);
+            List<String> lines = Files.readAllLines(path);
             boolean nerExistsInCurrentDirectory = lines.stream().anyMatch(line -> line.startsWith(lineNumberPrefix));
             if (!nerExistsInCurrentDirectory) {
                 // Si le numéro NER n'existe pas dans le répertoire courant, ne rien faire
@@ -77,7 +81,7 @@ public class AnnotationManager {
             // Supprimer la ligne correspondante au NER
             lines.removeIf(line -> line.startsWith(lineNumberPrefix));
             // Réécrire le fichier avec les mises à jour
-            Files.write(Paths.get(notesFilePath), lines, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(path, lines, StandardOpenOption.TRUNCATE_EXISTING);
             Output = "Annotation removed from notes.txt for NER " + NER + " in the current directory.";
             System.out.println(Output);
         } catch (IOException e) {
@@ -88,9 +92,9 @@ public class AnnotationManager {
 
     public String displayAnnotation(int NER) {
         String annotation = "";
-        String currentDirectoryPath = fileManager.currentDirectory.getPath();
+        String currentDirectoryPath = consoleManager.currentDirectory.getPath();
         String notesFilePath = Paths.get(currentDirectoryPath, "notes.txt").toString();
-        String targetPath = fileManager.getPathByNER(NER);
+        String targetPath = consoleManager.getPathByNER(NER);
         String fileName = targetPath != null ? new File(targetPath).getName() : null;
         String lineNumberPrefix = fileName + " ";
 
