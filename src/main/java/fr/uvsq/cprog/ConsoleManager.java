@@ -82,7 +82,7 @@ public class ConsoleManager {
                     break;
                 case "find":
                     if (parts.length > 1) {
-                        findFile(parts[1]);
+                        findElement(parts[1]);
                     } else {
                         Output = "Missing file name.";
                         System.out.println(Output);
@@ -166,16 +166,16 @@ public class ConsoleManager {
         }
     }
 
-    public void findFile(String fileName) {
+    public void findElement(String fileName) {
         Output = "";
-        findFileRecursive(currentDirectory.getPath(), fileName);
+        findElementRecursive(currentDirectory.getPath(), fileName);
         if (Output == null || Output.isEmpty()) {
             Output = "File not found: " + fileName;
             System.out.println(Output);
         }
     }
 
-    public void findFileRecursive(String directoryPath, String fileName) {
+    public void findElementRecursive(String directoryPath, String fileName) {
         File directory = new File(directoryPath);
         File[] files = directory.listFiles();
         if (files != null) {
@@ -191,7 +191,7 @@ public class ConsoleManager {
                     return; // Ajout pour arrêter la recherche une fois le fichier trouvé
                 }
                 if (file.isDirectory()) {
-                    findFileRecursive(file.getAbsolutePath(), fileName);
+                    findElementRecursive(file.getAbsolutePath(), fileName);
                 }
             }
         }

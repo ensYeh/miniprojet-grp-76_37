@@ -5,9 +5,10 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
         // Define the root directory path (replace it with your desired path)
-        String rootPath = ".\\RootTest";
+        String rootPath = ".\\Root";
         // Create an instance of the console file manager with the root directory path
         ConsoleManager consoleManager = new ConsoleManager(rootPath);
+        AnnotationManager annotationManager = new AnnotationManager(consoleManager);
         // Main logic of the application
         Scanner scanner = new Scanner(System.in);
         String command;

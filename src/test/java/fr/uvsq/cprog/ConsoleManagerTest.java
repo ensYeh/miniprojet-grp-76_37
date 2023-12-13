@@ -10,6 +10,30 @@ public class ConsoleManagerTest {
 
 
     @Test
+    void UnrecognizedCommand() {
+        consoleManager.processCommand("invalid");
+        assertEquals("Unrecognized command.", consoleManager.Output);
+    }
+
+    @Test
+    void getPathByNer_Success() {
+        String path = consoleManager.getPathByNER(4);
+        int rootTestIndex = path.indexOf("Root");
+        String outputPath = "";
+        if (rootTestIndex != -1) {
+            outputPath = path.substring(rootTestIndex);
+        }
+        assertEquals("RootTest\\Zola", outputPath);
+    }
+
+    @Test
+    void getPathByNer_ReturnNull() {
+        consoleManager.getPathByNER(50);
+        assertEquals(null, consoleManager.getPathByNER(50));
+    }
+
+
+    @Test
     void FindFile_Success() {
         consoleManager.processCommand("find Settings.json");
         int rootTestIndex = consoleManager.Output.indexOf("RootTest");

@@ -1,0 +1,340 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > ConsoleManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">fr.uvsq.cprog</a>
+</div>
+
+<h1>Coverage Summary for Class: ConsoleManager (fr.uvsq.cprog)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ConsoleManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75%
+  </span>
+  <span class="absValue">
+    (6/8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    68,8%
+  </span>
+  <span class="absValue">
+    (99/144)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package fr.uvsq.cprog;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.util.Arrays;
+&nbsp;
+&nbsp;public class ConsoleManager {
+&nbsp;    protected DirectoryManager currentDirectory;
+&nbsp;    public int lastNER;
+<b class="fc">&nbsp;    public String Output = &quot;&quot;;</b>
+<b class="fc">&nbsp;    public String Annot = &quot;&quot;;</b>
+<b class="fc">&nbsp;    private String operation = &quot;&quot;; // Soit copy, Soit cut pour la faire passer dans pastFile à fin de savoir si on supprime le fichier copié ou non</b>
+<b class="fc">&nbsp;    Object[] copiedFile = new Object[2]; // Stocker path et NER du fichier copier</b>
+&nbsp;    private final FileManager fileManager;
+&nbsp;    private final AnnotationManager annotationManager;
+&nbsp;    private final DirectoryManager directoryManager;
+&nbsp;
+<b class="fc">&nbsp;    public ConsoleManager(String rootPath) {</b>
+<b class="fc">&nbsp;        this.currentDirectory = new DirectoryManager(0, rootPath, this);</b>
+<b class="fc">&nbsp;        lastNER = 0;</b>
+<b class="fc">&nbsp;        this.fileManager = new FileManager(rootPath, this);</b>
+<b class="fc">&nbsp;        this.annotationManager = new AnnotationManager(this);</b>
+<b class="fc">&nbsp;        this.directoryManager = new DirectoryManager(0, rootPath, this);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void processCommand(String command) {
+<b class="fc">&nbsp;        String[] parts = command.split(&quot; &quot;);</b>
+&nbsp;        int NER;
+&nbsp;        String cmd;
+&nbsp;
+<b class="fc">&nbsp;        cmd = parts[0].toLowerCase();</b>
+<b class="fc">&nbsp;        if (parts[0].matches(&quot;\\d+&quot;)) {</b>
+&nbsp;            try {
+<b class="fc">&nbsp;                NER = Integer.parseInt(parts[0]);</b>
+<b class="fc">&nbsp;                cmd = (parts.length &gt; 1) ? parts[1].toLowerCase() : &quot; &quot;;</b>
+<b class="nc">&nbsp;            } catch (NumberFormatException e) {</b>
+<b class="nc">&nbsp;                cmd = parts[0].toLowerCase();</b>
+<b class="nc">&nbsp;                NER = lastNER;</b>
+<b class="fc">&nbsp;            }</b>
+<b class="fc">&nbsp;            lastNER = NER;</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            NER = lastNER;</b>
+&nbsp;        }
+<b class="fc">&nbsp;        if (!cmd.isEmpty()) {</b>
+<b class="fc">&nbsp;            switch (cmd) {</b>
+&nbsp;                case &quot;copy&quot;:
+<b class="fc">&nbsp;                    operation = &quot;copy&quot;;</b>
+<b class="fc">&nbsp;                    fileManager.copyFile(NER);</b>
+<b class="fc">&nbsp;                    Output = fileManager.Output;</b>
+<b class="fc">&nbsp;                    Annot = fileManager.Annot;</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;cut&quot;:
+<b class="fc">&nbsp;                    operation = &quot;cut&quot;;</b>
+<b class="fc">&nbsp;                    fileManager.copyFile(NER);</b>
+<b class="fc">&nbsp;                    Output = fileManager.Output;</b>
+<b class="fc">&nbsp;                    Annot = fileManager.Annot;</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;past&quot;:
+<b class="fc">&nbsp;                    fileManager.pasteFile(operation);</b>
+<b class="fc">&nbsp;                    Output = fileManager.Output;</b>
+<b class="fc">&nbsp;                    Annot = fileManager.Annot;</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;..&quot;:
+<b class="fc">&nbsp;                    directoryManager.navigateUp();</b>
+<b class="fc">&nbsp;                    Output = directoryManager.Output;</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;.&quot;:
+<b class="fc">&nbsp;                    directoryManager.navigateIntoDirectory(NER);</b>
+<b class="fc">&nbsp;                    Output = directoryManager.Output;</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;mkdir&quot;:
+<b class="fc">&nbsp;                    if (parts.length &gt; 1) {</b>
+<b class="fc">&nbsp;                        directoryManager.createDirectory(parts[1]);</b>
+<b class="fc">&nbsp;                        Output = directoryManager.Output;</b>
+&nbsp;                    } else {
+<b class="fc">&nbsp;                        Output = &quot;Missing directory name.&quot;;</b>
+<b class="fc">&nbsp;                        System.out.println(Output);</b>
+&nbsp;                    }
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;visu&quot;:
+<b class="fc">&nbsp;                    fileManager.viewFile(NER);</b>
+<b class="fc">&nbsp;                    Output = fileManager.Output;</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;find&quot;:
+<b class="fc">&nbsp;                    if (parts.length &gt; 1) {</b>
+<b class="fc">&nbsp;                        findElement(parts[1]);</b>
+&nbsp;                    } else {
+<b class="nc">&nbsp;                        Output = &quot;Missing file name.&quot;;</b>
+<b class="nc">&nbsp;                        System.out.println(Output);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;                case &quot;+&quot;:
+<b class="fc">&nbsp;                    if (parts.length &gt; 2) {</b>
+<b class="fc">&nbsp;                        String annotationText = String.join(&quot; &quot;, Arrays.copyOfRange(parts, 2, parts.length));</b>
+<b class="fc">&nbsp;                        annotationManager.annotateER(NER, annotationText);</b>
+<b class="fc">&nbsp;                        Output = annotationManager.Output;</b>
+<b class="fc">&nbsp;                    } else {</b>
+<b class="nc">&nbsp;                        Output = &quot;Missing annotation text.&quot;;</b>
+<b class="nc">&nbsp;                        System.out.println(Output);</b>
+&nbsp;                    }
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;                case &quot;-&quot;:
+<b class="fc">&nbsp;                    annotationManager.removeAnnotation(NER);</b>
+<b class="fc">&nbsp;                    Output = annotationManager.Output;</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot; &quot;:
+<b class="fc">&nbsp;                    designateElement(NER);</b>
+<b class="fc">&nbsp;                    break;</b>
+&nbsp;                case &quot;help&quot;:
+<b class="nc">&nbsp;                    displayHelp();</b>
+<b class="nc">&nbsp;                    break;</b>
+&nbsp;                default:
+<b class="fc">&nbsp;                    Output = &quot;Unrecognized command.&quot;;</b>
+<b class="fc">&nbsp;                    System.out.println(Output);</b>
+&nbsp;                    break;
+<b class="fc">&nbsp;            }</b>
+<b class="nc">&nbsp;        } else if (parts.length == 1 &amp;&amp; parts[0].equalsIgnoreCase(&quot;mkdir&quot;)) {</b>
+<b class="nc">&nbsp;            Output = &quot;Missing directory name.&quot;;</b>
+<b class="nc">&nbsp;            System.out.println(Output);</b>
+&nbsp;        } else {
+<b class="nc">&nbsp;            Output = &quot;Incomplete command.&quot;;</b>
+<b class="nc">&nbsp;            System.out.println(Output);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public String getPathByNER(int NER) {
+<b class="fc">&nbsp;        File[] files = new File(currentDirectory.getPath()).listFiles();</b>
+&nbsp;
+<b class="fc">&nbsp;        if (files != null &amp;&amp; NER &gt;= 1 &amp;&amp; NER &lt;= files.length) {</b>
+<b class="fc">&nbsp;            int ner = 1;</b>
+<b class="fc">&nbsp;            for (File file : files) {</b>
+<b class="fc">&nbsp;                if (ner == NER) {</b>
+<b class="fc">&nbsp;                    return file.getAbsolutePath();</b>
+&nbsp;                }
+<b class="fc">&nbsp;                ner++;</b>
+&nbsp;            }
+&nbsp;        }
+<b class="fc">&nbsp;        return null;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void displayCurrentDirectory() {
+&nbsp;        // Afficher le chemin du répertoire courant
+<b class="nc">&nbsp;        int rootTestIndex = currentDirectory.getPath().indexOf(&quot;Root&quot;);</b>
+&nbsp;
+&nbsp;        // Si &quot;Root&quot; est trouvé, extraire la sous-chaîne à partir de cet index
+<b class="nc">&nbsp;        String outputPath = &quot;&quot;;</b>
+<b class="nc">&nbsp;        if (rootTestIndex != -1) {</b>
+<b class="nc">&nbsp;            outputPath = currentDirectory.getPath().substring(rootTestIndex);</b>
+&nbsp;        }
+<b class="nc">&nbsp;        System.out.println(&quot;Current Directory: &quot; + outputPath);</b>
+&nbsp;
+<b class="nc">&nbsp;        File[] files = new File(currentDirectory.getPath()).listFiles();</b>
+&nbsp;
+<b class="nc">&nbsp;        if (files != null) {</b>
+<b class="nc">&nbsp;            int ner = 1;</b>
+<b class="nc">&nbsp;            System.out.printf(&quot;%-&quot; + 5 + &quot;s \t %-&quot; + 30 + &quot;s \t TYPE%n&quot;, &quot;NER&quot;, &quot;NOM&quot;);</b>
+<b class="nc">&nbsp;            for (File file : files) {</b>
+<b class="nc">&nbsp;                if (file.isDirectory()) {</b>
+<b class="nc">&nbsp;                    System.out.printf(&quot;%-&quot; + 5 + &quot;s \t %-&quot; + 30 + &quot;s \t (directory)%n&quot;, ner, file.getName());</b>
+&nbsp;                } else {
+<b class="nc">&nbsp;                    System.out.printf(&quot;%-&quot; + 5 + &quot;s \t %-&quot; + 30 + &quot;s \t (file)%n&quot;, ner, file.getName());</b>
+&nbsp;                }
+<b class="nc">&nbsp;                ner++;</b>
+&nbsp;            }
+<b class="nc">&nbsp;        } else {</b>
+<b class="nc">&nbsp;            System.out.println(&quot;Error retrieving directory items.&quot;);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void findElement(String fileName) {
+<b class="fc">&nbsp;        Output = &quot;&quot;;</b>
+<b class="fc">&nbsp;        findElementRecursive(currentDirectory.getPath(), fileName);</b>
+<b class="fc">&nbsp;        if (Output == null || Output.isEmpty()) {</b>
+<b class="fc">&nbsp;            Output = &quot;File not found: &quot; + fileName;</b>
+<b class="fc">&nbsp;            System.out.println(Output);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void findElementRecursive(String directoryPath, String fileName) {
+<b class="fc">&nbsp;        File directory = new File(directoryPath);</b>
+<b class="fc">&nbsp;        File[] files = directory.listFiles();</b>
+<b class="fc">&nbsp;        if (files != null) {</b>
+<b class="fc">&nbsp;            for (File file : files) {</b>
+<b class="fc">&nbsp;                if (file.getName().equals(fileName)) {</b>
+<b class="fc">&nbsp;                    Output = file.getAbsolutePath();</b>
+<b class="fc">&nbsp;                    int rootTestIndex = currentDirectory.getPath().indexOf(&quot;Root&quot;);</b>
+&nbsp;                    // Si &quot;Root&quot; est trouvé, extraire la sous-chaîne à partir de cet index
+<b class="fc">&nbsp;                    if (rootTestIndex != -1) {</b>
+<b class="fc">&nbsp;                        Output = Output.substring(rootTestIndex);</b>
+&nbsp;                    }
+<b class="fc">&nbsp;                    System.out.println(Output);</b>
+&nbsp;                    return; // Ajout pour arrêter la recherche une fois le fichier trouvé
+&nbsp;                }
+<b class="fc">&nbsp;                if (file.isDirectory()) {</b>
+<b class="fc">&nbsp;                    findElementRecursive(file.getAbsolutePath(), fileName);</b>
+&nbsp;                }
+&nbsp;            }
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void designateElement(int NER) {
+<b class="fc">&nbsp;        String targetPath = getPathByNER(NER);</b>
+&nbsp;
+<b class="fc">&nbsp;        if (targetPath != null) {</b>
+<b class="fc">&nbsp;            File targetElement = new File(targetPath);</b>
+&nbsp;
+<b class="fc">&nbsp;            if (targetElement.exists()) {</b>
+&nbsp;                // Afficher le nom de l&#39;élément
+<b class="fc">&nbsp;                Output = &quot;User designates element number &quot; + NER + &quot;: &quot; + targetElement.getName();</b>
+<b class="fc">&nbsp;                System.out.println(Output);</b>
+&nbsp;
+&nbsp;                // Afficher l&#39;annotation correspondante
+<b class="fc">&nbsp;                annotationManager.displayAnnotation(NER);</b>
+&nbsp;            } else {
+<b class="nc">&nbsp;                Output = &quot;Element not found for NER &quot; + NER;</b>
+<b class="nc">&nbsp;                System.out.println(Output);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        } else {</b>
+<b class="fc">&nbsp;            Output = &quot;Element not found for NER &quot; + NER;</b>
+<b class="fc">&nbsp;            System.out.println(Output);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    private void displayHelp() {
+<b class="nc">&nbsp;        System.out.println(&quot;Les commandes du gestion de fichiers à implémenter sont:&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;[&lt;NER&gt;] copy&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;past ; si l’élément existe, alors le nom du nouvel élément sera concaténé avec \&quot;-copy\&quot;&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;[&lt;NER&gt;] cut&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;.. ; pour remonter d’un cran dans le système de fichiers&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;[&lt;NER&gt;] . ; pour entrer dans un répertoire à condition que le NER désigne un répertoire. Exemple \&quot;4 .\&quot;&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;mkdir &lt;nom&gt; ; pour créer un répertoire&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;[&lt;NER&gt;] visu ; permet de voir le contenu d’un fichier texte. Si le fichier n’est pas de type texte, vous afficherez sa taille.&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;find &lt;nom fichier&gt; ; Recherche dans toutes les sous-répertoires du répertoire courant, le(s) fichier(s) et les affiche.&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;3 + \&quot;ceci est un texte\&quot; ; le texte est ajouté ou concaténé au texte existant sur l’ER&quot;);</b>
+<b class="nc">&nbsp;        System.out.println(&quot;3 - ; retire tout le texte associé à l’ER 3&quot;);</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-13 13:39</div>
+</div>
+</body>
+</html>

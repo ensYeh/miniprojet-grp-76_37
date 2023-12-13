@@ -1,0 +1,190 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=windows-1252"> 
+  <title>Coverage Report > DirectoryManager</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">fr.uvsq.cprog</a>
+</div>
+
+<h1>Coverage Summary for Class: DirectoryManager (fr.uvsq.cprog)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">DirectoryManager</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87,5%
+  </span>
+  <span class="absValue">
+    (35/40)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package fr.uvsq.cprog;
+&nbsp;
+&nbsp;import org.slf4j.Logger;
+&nbsp;import org.slf4j.LoggerFactory;
+&nbsp;
+&nbsp;import java.io.File;
+&nbsp;import java.io.IOException;
+&nbsp;import java.nio.file.Files;
+&nbsp;import java.nio.file.Path;
+&nbsp;import java.nio.file.Paths;
+&nbsp;import java.util.ArrayList;
+&nbsp;import java.util.List;
+&nbsp;
+&nbsp;public class DirectoryManager extends FileManager {
+&nbsp;    private final List&lt;FileManager&gt; elements;
+&nbsp;    private final ConsoleManager consoleManager;
+&nbsp;
+&nbsp;    public DirectoryManager(int NER, String path, ConsoleManager fileManager) {
+<b class="fc">&nbsp;        super(NER, path);</b>
+<b class="fc">&nbsp;        this.elements = new ArrayList&lt;&gt;();</b>
+<b class="fc">&nbsp;        this.consoleManager = fileManager;</b>
+&nbsp;    }
+&nbsp;
+<b class="fc">&nbsp;    private static final Logger logger = LoggerFactory.getLogger(ConsoleManager.class);</b>
+&nbsp;
+&nbsp;    public List&lt;FileManager&gt; getElements() {
+<b class="fc">&nbsp;        return elements;</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void addElement(FileManager element) {
+<b class="fc">&nbsp;        elements.add(element);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    public void navigateUp() {
+<b class="fc">&nbsp;        if (consoleManager.currentDirectory.getPath().equals(&quot;Root&quot;)) {</b>
+<b class="nc">&nbsp;            Output = &quot;Already at the root.&quot;;</b>
+<b class="nc">&nbsp;            System.out.println(Output);</b>
+&nbsp;            return;
+&nbsp;        }
+<b class="fc">&nbsp;        String parentPath = consoleManager.currentDirectory.getPath();</b>
+<b class="fc">&nbsp;        File parentFile = new File(parentPath).getParentFile();</b>
+<b class="fc">&nbsp;        Output = String.valueOf(parentFile);</b>
+<b class="fc">&nbsp;        if (parentFile != null &amp;&amp; !parentPath.endsWith(&quot;Root&quot;)) {</b>
+<b class="fc">&nbsp;            consoleManager.currentDirectory = new DirectoryManager(0, parentFile.getAbsolutePath(), consoleManager);</b>
+&nbsp;        } else {
+<b class="fc">&nbsp;            Output = &quot;Already at the root.&quot;;</b>
+<b class="fc">&nbsp;            System.out.println(Output);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void navigateIntoDirectory(int NER) {
+<b class="fc">&nbsp;        String targetDirectoryPath = consoleManager.getPathByNER(NER);</b>
+<b class="fc">&nbsp;        if (targetDirectoryPath != null) {</b>
+<b class="fc">&nbsp;            File targetDirectory = new File(targetDirectoryPath);</b>
+<b class="fc">&nbsp;            if (targetDirectory.isDirectory()) {</b>
+<b class="fc">&nbsp;                consoleManager.currentDirectory.setPath(targetDirectoryPath);</b>
+&nbsp;            } else {
+<b class="fc">&nbsp;                Output = &quot;The element corresponding to NER is a file, not a directory.&quot;;</b>
+<b class="fc">&nbsp;                System.out.println(Output);</b>
+&nbsp;            }
+<b class="fc">&nbsp;        } else {</b>
+<b class="fc">&nbsp;            Output = &quot;Directory not found.&quot;;</b>
+<b class="fc">&nbsp;            System.out.println(Output);</b>
+&nbsp;        }
+&nbsp;    }
+&nbsp;
+&nbsp;    public void createDirectory(String name) {
+<b class="fc">&nbsp;        int newNER = consoleManager.currentDirectory.getElements().size() + 1;</b>
+<b class="fc">&nbsp;        DirectoryManager newDirectory = new DirectoryManager(newNER, consoleManager.currentDirectory.getPath(), consoleManager);</b>
+<b class="fc">&nbsp;        Path newDirectoryPath = Paths.get(consoleManager.currentDirectory.getPath(), name);</b>
+&nbsp;        try {
+<b class="fc">&nbsp;            Files.createDirectory(newDirectoryPath);</b>
+<b class="fc">&nbsp;            newDirectory.setPath(newDirectoryPath.toString());</b>
+<b class="fc">&nbsp;            consoleManager.currentDirectory.addElement(newDirectory);</b>
+&nbsp;            // Crée le fichier notes.txt dans le nouveau répertoire
+<b class="fc">&nbsp;            Path notesFilePath = Paths.get(newDirectoryPath.toString(), &quot;notes.txt&quot;);</b>
+<b class="fc">&nbsp;            Files.createFile(notesFilePath);</b>
+<b class="fc">&nbsp;            Output = &quot;Directory created successfully. notes.txt created.&quot;;</b>
+<b class="fc">&nbsp;            System.out.println(Output);</b>
+<b class="nc">&nbsp;        } catch (IOException e) {</b>
+<b class="nc">&nbsp;            Output = &quot;Error creating directory.&quot;;</b>
+<b class="nc">&nbsp;            logger.error(Output);</b>
+<b class="fc">&nbsp;        }</b>
+&nbsp;    }
+&nbsp;
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2023-12-13 13:39</div>
+</div>
+</body>
+</html>
