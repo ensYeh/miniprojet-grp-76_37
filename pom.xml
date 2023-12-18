@@ -75,18 +75,6 @@
         <pluginManagement>
             <plugins>
                 <!-- Maven Wrapper -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-wrapper-plugin</artifactId>
-                    <version>${maven.wrapper.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>wrapper</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
 
                 <!-- Maven Clean Plugin -->
                 <plugin>

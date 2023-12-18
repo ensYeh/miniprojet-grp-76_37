@@ -116,6 +116,11 @@ Assurez-vous d'être dans le bon répertoire pour lancer l'application.
 
 - Étape 4: Lancement des Tests
 
+Afin de tester notre application, nous avons créé un dossier appelé "RootTest".
+Nous avons choisi cette approche parce que les NER nécessaires à
+nos tests sont déjà définies en fonction des scénarios que nous avons définis
+
+
 Si vous souhaitez exécuter les tests, utilisez la commande :
 ----
 miniprojet-grp-76_37> mvn test
@@ -284,7 +289,7 @@ $ java -jar target/explorer-10-SNAPSHOT-jar-with-dependencies.jar
 
 On consulte le rapport de couverture par : 
 
-- nous ajoutons le plugin de jacoco report au fichier POM
+- On ajoute le plugin de jacoco report au fichier POM
 - On passe la commande "mvn test" pour lançer les testes unitaires
 - On passe la commande "mvn jacoco:prepare-agent test install jacoco:report" 
 - Le rapport JaCoCo est généré dans le répertoire target/site/jacoco/index.html 
