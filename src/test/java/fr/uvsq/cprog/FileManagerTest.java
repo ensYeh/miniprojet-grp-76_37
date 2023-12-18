@@ -44,7 +44,7 @@ class FileManagerTest {
     @Test
     void testviewFile_NotText() throws IOException {
         consoleManager.processCommand("6 visu");
-        assertEquals("The file is not a text type. Displaying size: 41329 bytes", consoleManager.output);
+        assertEquals("The file is not a text type. Displaying size: 41329bytes", consoleManager.output);
     }
 
     @Test

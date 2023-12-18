@@ -89,25 +89,26 @@ public class FileManager implements Serializable {
             br.close();
           } catch (IOException e) {
             output = "Error reading file: " + e.getMessage();
-            logger.error(output);
-            System.out.println(output);
+            logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
           }
           if (Objects.equals(output, "") || output.isEmpty()) {
             output = "Empty file";
-            System.out.println(output);
+            System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
           }
         } else {
           output = "The file is not a text type. Displaying size: "
-                  + targetFile.length() + " bytes";
-          System.out.println(output);
+            + targetFile.length() + "bytes";
+          System.out.println("The file is not a text type. Displaying size: " 
+                  + ConsoleColors.GREEN + targetFile.length() + ConsoleColors.RESET 
+                  + ConsoleColors.GREEN + "bytes" + ConsoleColors.RESET);
         }
       } else {
         output = "The element corresponding to NER is not a file.";
-        System.out.println(output);
+        System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
       }
     } else {
       output = "File not found for NER " + ner;
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 
@@ -122,12 +123,12 @@ public class FileManager implements Serializable {
       consoleManager.copiedFile[0] = ner;
       consoleManager.copiedFile[1] = copiedFilePath;
       output = "Element copied successfully.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
       // Maintenant, on appele la méthode pour copier l'annotation
       annot = annotationManager.displayAnnotation(ner);
     } else {
       output = "Element not found for NER " + ner;
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 
@@ -172,12 +173,12 @@ public class FileManager implements Serializable {
             }
           } catch (IOException e) {
             output = "Error pasting file: " + e.getMessage();
-            logger.error(output);
+            logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
             return;
           }
         }
         output = "Element pasted successfully.";
-        System.out.println(output);
+        System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
         int indexOfSpace = annot.indexOf(' '); // Find the index of the first space
         String annotationText = (indexOfSpace != -1) ? annot.substring(indexOfSpace + 1) : annot;
         annotationManager.annotateEr(consoleManager.lastNer, annotationText);
@@ -187,11 +188,11 @@ public class FileManager implements Serializable {
         }
       } else {
         output = "The copied element does not exist.";
-        System.out.println(output);
+        System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
       }
     } else {
       output = "Copied file or directory not found.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 
@@ -221,7 +222,7 @@ public class FileManager implements Serializable {
     } catch (IOException e) {
       e.printStackTrace();
       output = "Error copying directory: " + e.getMessage();
-      logger.error(output);
+      logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 
@@ -237,23 +238,23 @@ public class FileManager implements Serializable {
           if (fileOrDirectory.isFile()) {
             Files.deleteIfExists(Paths.get(path));
             output = "File deletion successful.";
-            System.out.println(output);
+            System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
           } else if (fileOrDirectory.isDirectory()) {
             FileUtils.deleteDirectory(fileOrDirectory);
             output = "Directory deletion successful.";
-            System.out.println(output);
+            System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
           }
         } catch (IOException e) {
           output = "Error deleting: " + e.getMessage();
-          logger.error(output);
+          logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
         }
       } else {
         output = "File or directory not found for NER" + ner;
-        System.out.println(output);
+        System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
       }
     } else {
       output = "File or directory not found for NER " + ner;
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 }

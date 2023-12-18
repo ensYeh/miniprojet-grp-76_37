@@ -59,14 +59,14 @@ public class AnnotationManager {
         // Réécrire le fichier avec les mises à jour
         Files.write(path, lines, StandardOpenOption.TRUNCATE_EXISTING);
         output = "Annotation added to notes.txt for NER " + ner + " in the current directory.";
-        System.out.println(output);
+        System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
       } catch (IOException e) {
         output = "Error adding annotation to notes.txt: " + e.getMessage();
-        logger.error(output);
+        logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
       }
     } else {
       output = "Element not found for NER " + ner;
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 
@@ -87,7 +87,7 @@ public class AnnotationManager {
       if (!nerExistsInCurrentDirectory) {
         // Si le numéro NER n'existe pas dans le répertoire courant, ne rien faire
         output = "NER " + ner + " does not have an annotation in the current directory.";
-        System.out.println(output);
+        System.out.println(ConsoleColors.YELLOW + output + ConsoleColors.RESET);
         return;
       }
       // Supprimer la ligne correspondante au NER
@@ -95,10 +95,10 @@ public class AnnotationManager {
       // Réécrire le fichier avec les mises à jour
       Files.write(path, lines, StandardOpenOption.TRUNCATE_EXISTING);
       output = "Annotation removed from notes.txt for NER " + ner + " in the current directory.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
     } catch (IOException e) {
       output = "Error removing annotation from notes.txt: " + e.getMessage();
-      logger.error(output);
+      logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 
@@ -124,15 +124,15 @@ public class AnnotationManager {
             .findFirst()
             .orElse("");
         output = "Annotation: " + annotation;
-        System.out.println(output);
+        System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
       } else {
         // Si aucune annotation n'est trouvée, afficher une chaîne vide
         output = "Annotation: ";
-        System.out.println(output);
+        System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
       }
     } catch (IOException e) {
       output = "Error reading annotation from notes.txt: " + e.getMessage();
-      logger.error(output);
+      logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
     return annotation;
   }

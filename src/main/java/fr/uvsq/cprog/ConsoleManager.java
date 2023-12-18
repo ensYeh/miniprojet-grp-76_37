@@ -83,7 +83,7 @@ public class ConsoleManager {
             output = directoryManager.output;
           } else {
             output = "Missing directory name.";
-            System.out.println(output);
+            System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
           }
           break;
         case "visu":
@@ -95,7 +95,7 @@ public class ConsoleManager {
             findElement(parts[1]);
           } else {
             output = "Missing file name.";
-            System.out.println(output);
+            System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
           }
           break;
         case "+":
@@ -105,7 +105,7 @@ public class ConsoleManager {
             output = annotationManager.output;
           } else {
             output = "Missing annotation text.";
-            System.out.println(output);
+            System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
           }
           break;
         case "-":
@@ -120,15 +120,15 @@ public class ConsoleManager {
           break;
         default:
           output = "Unrecognized command.";
-          System.out.println(output);
+          System.out.println(ConsoleColors.YELLOW + output + ConsoleColors.RESET);
           break;
       }
     } else if (parts.length == 1 && parts[0].equalsIgnoreCase("mkdir")) {
       output = "Missing directory name.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     } else {
       output = "Incomplete command.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.YELLOW + output + ConsoleColors.RESET);
     }
   }
 
@@ -149,25 +149,31 @@ public class ConsoleManager {
     }
     return null;
   }
-
+  
   /*** Affiche le répertoire courant et ses éléments.*/
   public void displayCurrentDirectory() {
     // Afficher le chemin du répertoire courant
-    System.out.println("Current Directory: " + currentDirectory.getPath());
+    System.out.println(ConsoleColors.GREEN_BOLD
+        + "Current Directory: "
+        + ConsoleColors.RESET + currentDirectory.getPath());
     File[] files = new File(currentDirectory.getPath()).listFiles();
     if (files != null) {
       int ner = 1;
-      System.out.printf("%-" + 5 + "s \t %-" + 30 + "s \t TYPE%n", "NER", "NOM");
+      System.out.printf(ConsoleColors.PURPLE + "%-" + 5 + "s \t %-" + 30 + "s \t TYPE%n" 
+          + ConsoleColors.RESET, "NER", "NOM");
       for (File file : files) {
         if (file.isDirectory()) {
-          System.out.printf("%-" + 5 + "s \t %-" + 30 + "s \t (directory)%n", ner, file.getName());
+          System.out.printf(ConsoleColors.YELLOW + "%-" + 5 + "s \t %-" + 30 + "s \t (directory)%n" 
+              + ConsoleColors.RESET, ner, file.getName());
         } else {
-          System.out.printf("%-" + 5 + "s \t %-" + 30 + "s \t (file)%n", ner, file.getName());
+          System.out.printf(ConsoleColors.CYAN + "%-" + 5 + "s \t %-" + 30 + "s \t (file)%n"
+              + ConsoleColors.RESET, ner, file.getName());
         }
         ner++;
       }
     } else {
-      System.out.println("Error retrieving directory items.");
+      System.out.println(ConsoleColors.RED + "Error retrieving directory items." 
+          + ConsoleColors.RESET);
     }
   }
 
@@ -179,7 +185,8 @@ public class ConsoleManager {
     findElement_recursive(currentDirectory.getPath(), fileName);
     if (output == null || output.isEmpty()) {
       output = "File not found: " + fileName;
-      System.out.println(output);
+      System.out.println(ConsoleColors.YELLOW + "File not found: "  
+           + ConsoleColors.RESET + fileName);
     }
   }
 
@@ -214,16 +221,16 @@ public class ConsoleManager {
       if (targetElement.exists()) {
         // Afficher le nom de l'élément
         output = "User designates element number " + ner + ": " + targetElement.getName();
-        System.out.println(output);
+        System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
         // Afficher l'annotation correspondante
         annotationManager.displayAnnotation(ner);
       } else {
         output = "Element not found for NER " + ner;
-        System.out.println(output);
+        System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
       }
     } else {
       output = "Element not found for NER " + ner;
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 

@@ -52,7 +52,7 @@ public class DirectoryManager extends FileManager {
   public void navigateUp() {
     if (consoleManager.currentDirectory.getPath().equals("C:\\")) {
       output = "Already at the root.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.YELLOW + output + ConsoleColors.RESET);
       return;
     }
     String parentPath = consoleManager.currentDirectory.getPath();
@@ -77,11 +77,11 @@ public class DirectoryManager extends FileManager {
         consoleManager.currentDirectory.setPath(targetDirectoryPath);
       } else {
         output = "The element corresponding to NER is a file, not a directory.";
-        System.out.println(output);
+        System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
       }
     } else {
       output = "Directory not found.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 
@@ -101,10 +101,10 @@ public class DirectoryManager extends FileManager {
       Path notesFilePath = Paths.get(newDirectoryPath.toString(), "notes.txt");
       Files.createFile(notesFilePath);
       output = "Directory created successfully. notes.txt created.";
-      System.out.println(output);
+      System.out.println(ConsoleColors.GREEN + output + ConsoleColors.RESET);
     } catch (IOException e) {
       output = "Error creating directory. " + e.getMessage();
-      logger.error(output);
+      logger.error(ConsoleColors.RED + output + ConsoleColors.RESET);
     }
   }
 }
