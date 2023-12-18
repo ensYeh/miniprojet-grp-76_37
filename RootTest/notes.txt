@@ -1,0 +1,2 @@
+Topologie.PNG "Ceci est une annotation d'image PNG."
+AA "Ceci est une annotation de directory AA"

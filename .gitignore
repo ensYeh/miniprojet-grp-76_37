@@ -2,7 +2,6 @@
 htmlReport/
 #Dossier Root
 Root/
-RootTest/
 # Fichiers générés par Maven
 target/
 
