@@ -81,13 +81,186 @@ https://github.com/jline/jline3[JLine] (gestion des saisies)
 
 == Manuel utilisateur
 
+-  Guide d'Utilisation - Gestionnaire de Fichiers
+
+Bienvenue dans le Gestionnaire de Fichiers! 
+
+Suivez attentivement les étapes ci-dessous pour compiler, exécuter, et utiliser les commandes disponibles dans l'application.
+
+- Étape 1: Vérification de la Conformité au Style de Code Pour garantir que le code respecte les normes de style, exécutez la commande suivante :
+-----
+miniprojet-grp-76_37> mvn checkstyle:check
+-----
+Cela s'assurera que le code est correctement formaté.
+
+- Étape 2: Compilation
+
+Compilez le code source en un exécutable avec la commande :
+----
+miniprojet-grp-76_37> mvn compile assembly:single 
+----
+ET
+mvn package pour generer une version executable de l'application 
+Cela créera un fichier exécutable JAR dans le répertoire target.
+
+- Étape 3: Exécution
+
+Exécutez l'application avec la commande suivante :
+----
+miniprojet-grp-76_37> java -jar .\target\explorer-1.0-SNAPSHOT-jar-with-dependencies.jar
+----
+Assurez-vous d'être dans le bon répertoire pour lancer l'application.
+----
+\miniprojet-grp-76_37> 
+----
+
+- Étape 4: Lancement des Tests
+
+Si vous souhaitez exécuter les tests, utilisez la commande :
+----
+miniprojet-grp-76_37> mvn test
+----
+
+Pour la couverture du code utilisez ces commandes :
+----
+miniprojet-grp-76_37> mvn jacoco:prepare-agent test install jacoco:report"
+----
+Cela permet de s'assurer que l'application fonctionne correctement.
+Utilisation de l'Application
+Une fois l'application en cours d'exécution, utilisez les commandes suivantes pour interagir avec le Gestionnaire de Fichiers.
+
+- Copie de Fichier ou Répertoire
+Commande: [<NER>] copy
+Description: Copie le fichier ou le répertoire désigné par le NER spécifié.
+
+- Coller (Paste)
+Commande: past
+Description: Crée une copie de l'élément avec le nom d'origine concaténé avec "-copy" s'il a été copié. Pour les répertoires, la copie est récursive.
+
+- Coupe de Fichier ou Répertoire
+Commande: [<NER>] cut
+Description: Coupe (déplace) le fichier ou le répertoire désigné par le NER spécifié.
+
+- Navigation dans le Système de Fichiers
+Commande: ..
+Description: Remonte d'un cran dans le système de fichiers, revenant au répertoire parent.
+
+- Entrer dans un Répertoire
+Commande: [<NER>] .
+Description: Permet d'entrer dans un répertoire, à condition que le NER spécifié désigne un répertoire. 
+Exemple : "4 ." pour entrer dans le répertoire avec le NER 4.
+
+- Création de Répertoire
+Commande: mkdir <nom>
+Description: Crée un nouveau répertoire avec le nom spécifié.
+
+- Affichage de Contenu de Fichier
+Commande: [<NER>] visu
+Description: Affiche le contenu d'un fichier texte. Si le fichier n'est pas de type texte, affiche la taille du fichier.
+
+- Recherche de Fichier
+Commande: find <nom fichier>
+Description: Recherche dans toutes les sous-répertoires du répertoire courant le(s) fichier(s) avec le nom spécifié et les affiche.
+
+- Ajout de Texte à une Annotation
+Commande: 3 + "ceci est un texte"
+Description: Ajoute ou concatène le texte spécifié à l'annotation existante sur l'ER avec le NER 3.
+
+- Retrait de Texte d'une Annotation
+Commande: 3 -
+Description: Retire tout le texte associé à l'ER 3.
+
+- Help
+Commande: help
+Description: Affiche toutes les commandes et leurs descriptions 
+
+Astuces et Aide :
+
+Assurez-vous d'utiliser la syntaxe correcte pour chaque commande.
+Pour obtenir de l'aide à tout moment, utilisez la commande help à l'intérieur de l'application pour afficher les commandes disponibles.
+Notre application contient l'auto-complete vous pouvez vous servir de ce racourci pour completer votre commande
+
+
+
 > À compléter :
 > Comment l'utilisateur peut savoir quelle commande taper pour un élément du répertoire désigné ?
+
+Dans le code fourni, l'utilisateur peut connaître les commandes disponibles pour un élément du répertoire 
+désigné en utilisant la commande help ou bien avec le raccourci autocomplete de la bibliotheque Jline.
+
 > Quelles sont les mises à jours du fichier des annotations à effectuer en fonction des types de commandes ?
+
+Commandes "+" et "-" (Annotation) :
+
+Ces commandes modifient délibérément le contenu d'annotations. Nous pouvons les utiliser pour ajouter ou supprimer des annotations associées à un fichier ou un répertoire.
+
+- 3 + "ceci est un texte"  : Annote l'élément 3 avec cette note
+- 3 - : Supprime l'annotation de l'élément 3
+Copy + past elle copie aussi l'annotation du fichier aussi et l'insert dans l'endroit qu'il faut.
+
 > Y a t il des bibliothèques Java qui permettront de prendre en charge la visualisation d'une image png si l'utilisateur veut l'afficher ? 
+
+Oui 
+
+En Java, dans un terminal, il est possible d'afficher une image PNG en utilisant des bibliothèques spéciales 
+comme JAI( Java advanced Imaging), qui est une API Java développée par Oracle pour le traitement d'images,notamment pour la manipulation d'images raster et vectorielles.
+
+
 > Quelles sont les commandes qui seraient utiles de rajouter ?
+
+Pour enrichir les fonctionnalités du gestionnaire de fichiers, Nous pourrions envisager d'ajouter des commandes 
+qui sont couramment utilisées dans de tels systèmes. Voici quelques suggestions de commandes qui pourraient être utiles :
+
+- Suppression de Fichier ou Répertoire :
+Commande : rm <NER>
+Description : Supprime le fichier ou le répertoire désigné par le NER spécifié.
+
+- Renommage de Fichier ou Répertoire :
+Commande : rename <NER> <nouveau_nom>
+Description : Renomme le fichier ou le répertoire désigné par le NER avec le nouveau nom spécifié.
+
+- Creer fichier text:
+Commande : touch <nom>
+Description : Creer un fichier avec le nom <nom>
+
+- Modifier un fichier text:
+Commande : modify <NER> 
+Description : Modifier un fichier texte en ouvrant ce fichier en modification pour l'utilisateur 
+
+- Trier le contenu des repertoires : 
+Commande : sort <critère>
+Description : Trie les fichiers du répertoire courant en fonction du critère spécifié (par exemple, par nom, par date, par taille).
+
+- Affichage de l'Arborescence du Répertoire :
+Commande : tree
+Description : Affiche l'arborescence complète du répertoire courant.
+
 > Quelles améliorations peut on envisager pour rendre l'usage de l'interface clavier plus souples/efficaces pour l'utilisateur ?
+
+Pour rendre l'interface clavier plus souple et efficace pour l'utilisateur dans notre gestionnaire de fichiers, On pourra envisager les améliorations suivantes :
+
+- Raccourcis clavier : Intégrer des raccourcis clavier pour les commandes fréquemment utilisées, offrant ainsi une méthode rapide pour effectuer des actions courantes.
+
+- Commandes intuitives : Rendre les commandes plus intuitives et faciles à mémoriser. Par exemple, utiliser des noms de commandes explicites et des arguments logiques.
+
+- Confirmation avant actions critiques : Ajouter des mécanismes de confirmation avant d'effectuer des actions critiques (suppression de fichiers, etc.) pour éviter les erreurs accidentelles.
+
+- Messages d'erreur explicites : Fournir des messages d'erreur clairs et explicites pour aider l'utilisateur à comprendre les problèmes et à prendre des mesures correctives.
+
+- Interface graphique (en option) :Offrir une interface graphique en parallèle avec l'interface en ligne de commande pour les utilisateurs qui préfèrent une approche visuelle.
+
 > Quelles évolutions peut-on envisager ?
+
+- Affichage dynamique :
+
+Mettre en œuvre un affichage dynamique qui réagit en temps réel aux changements dans le répertoire, offrant une meilleure visualisation de la structure du répertoire.
+
+- Mode édition directe :
+Intégrer un mode édition directe pour le renommage rapide des fichiers et des répertoires.
+
+- Marquage multiple :
+Permettre à l'utilisateur de sélectionner plusieurs fichiers ou répertoires simultanément, puis d'appliquer une commande à l'ensemble sélectionné.
+
 
 == Manuel technique
 === Compiler le projet
@@ -98,17 +271,106 @@ $ ./mvnw package
 
 .Sous Windows
 ----
-> mvnw.cmd package
+> mvn package
 ----
 
 === Exécuter l'application
 ----
-$ java -jar target/explorer-1.0.jar
+$ java -jar target/explorer-10-SNAPSHOT-jar-with-dependencies.jar
 ----
 
 > À compléter :
 > Comment consulter le rapport de couverture de code par les tests ?
+
+On consulte le rapport de couverture par : 
+
+- nous ajoutons le plugin de jacoco report au fichier POM
+- On passe la commande "mvn test" pour lançer les testes unitaires
+- On passe la commande "mvn jacoco:prepare-agent test install jacoco:report" 
+- Le rapport JaCoCo est généré dans le répertoire target/site/jacoco/index.html 
+- On ouvre le fichier index.html dans navigateur. Cela affichera 
+  une représentation graphique détailler de la couverture de code de projet.
+
 > Quelles bibliothèques ont été utilisées et pourquoi ?
+
+Les bibliothèques utilisées dans le code ont des rôles spécifiques qui contribuent au fonctionnement de l'application. Voici l'intérêt de chacune d'entre elles :
+
+- jline : Utilisée pour améliorer l'interface de ligne de commande en fournissant des fonctionnalités telles que la saisie interactive et la gestion des commandes.
+
+- JUnit 5 : Utilisée pour le framework de tests unitaires. Permet de créer et d'exécuter des tests automatisés pour assurer la fiabilité et la qualité du code.
+
+- jansi : Utilisée pour la gestion des couleurs dans la console, améliorant ainsi la lisibilité et l'expérience utilisateur.
+
+- Java IO et Java NIO : Utilisées pour les opérations d'entrée/sortie, essentielles pour la manipulation des fichiers et des répertoires dans le système de fichiers.
+
+- slf4j (Simple Logging Facade for Java) : Fournit une façade de journalisation simple pour le code Java, permettant une abstraction flexible des bibliothèques de journalisation concrètes.
+
+- logback : Une implémentation concrète de slf4j, utilisée pour la journalisation effective dans l'application.
+
 > Quel est le rôle des différentes classes ?
+
+- App :
+La classe App est la classe principale de notre application et agit comme le point d'entrée. Son rôle est de gérer l'interface utilisateur en ligne de commande et de coordonner les différentes fonctionnalités du gestionnaire de fichiers.
+
+- ConsoleManager :
+Rôle : Gère les commandes entrées par l'utilisateur et coordonne les opérations de gestion de fichiers et d'annotations en fonction de ces commandes.
+Fonctionnalités : Interprète les commandes, appelle les méthodes appropriées de FileManager, AnnotationManager et DirectoryManager, et gère l'affichage des résultats et le contenu du répertoire actuel.Il contient aussi des methodes qui sont commmun entre FileManager et DirectoryManager
+
+- FileManager :
+Rôle : Responsable de la gestion des opérations de fichiers, telles que la copie,la visualisation...etc.
+Fonctionnalités : Implémente les méthodes pour effectuer des opérations de fichiers spécifiques, comme copier coller couper et la visualisationdes fichiers et gère les annotations associées aux elements dans le cas de copy past .
+
+- AnnotationManager :
+Rôle : Gère les opérations liées aux annotations associées aux elements du système de fichiers.
+Fonctionnalités : Ajoute des annotations, supprime des annotations, affiche les
+annotations pour un fichier donné.
+
+- DirectoryManager :
+Rôle : Gère la navigation dans la structure du répertoire, permettant à l'utilisateur de passer d'un répertoire à un autre.
+Fonctionnalités : Implémente des méthodes pour naviguer dans la hiérarchie des répertoires, , et permet à l'utilisateur de remonter ou d'entrer dans un répertoire spécifique. Ainsi que ma creation d'un repartoire.
+
+- ConsoleColors :
+La classe ConsoleColors fournit des codes d'échappement ANSI pour modifier les couleurs et le style du texte affiché dans la console. Son rôle est d'améliorer la lisibilité de la sortie console en appliquant différentes 
+couleurs et mises en forme.*
+
 > Quels traitements sont réalisés pour gérer une commande saisie par l'utilisateur ? Donnez un exemple.
+
+La classe ConsoleManager constitue le cœur du gestionnaire de fichiers en mode terminal. Elle prend en charge le traitement des commandes saisies par l'utilisateur pour interagir avec le système de fichiers virtuel. La logique de traitement s'articule autour des étapes suivantes :
+
+- Analyse de la commande :
+La commande saisie est décomposée pour identifier l'NER (Numéro d'Entité Reconnaissable) et extraire la commande elle-même.
+
+- Identification de la commande et de l'NER :
+La commande est identifiée, et si un NER est présent, il est pris en compte. Sinon, le dernier NER utilisé est conservé.
+
+- Traitement de la commande :
+Un mécanisme de commutation (switch) dirige le traitement vers des méthodes spécifiques en fonction de la commande.
+Les opérations incluent la copie, la coupe, le collage, la navigation, la création de répertoires, l'affichage du contenu des fichiers, la recherche, et la gestion des annotations.
+
+- Affichage de l'état courant et gestion des retours d'informations :
+Les résultats des opérations et les messages d'erreur sont stockés dans des variables dédiées (output et annot) et affichés à l'utilisateur.
+
+- Gestion des erreurs :
+Des messages informatifs sont générés en cas de commandes incorrectes ou d'opérations réussies/échouées.
+
+- Exemple :
+-----
+$ 3 copy
+-----
+
+- L'analyse de la commande divise la saisie en parties, identifiant l'NER (ici, "3") et la commande ("copy").
+- Le programme interprète que l'utilisateur souhaite effectuer une copie du fichier associé à l'NER 3.
+- La méthode copyFile(ner) dans l'objet fileManager est appelée, réalisant ainsi la copie du fichier correspondant à l'NER 3.
+- Le résultat de l'opération, ainsi que tout message associé, est stocké dans les variables output et annot. Ces informations sont affichées à l'utilisateur, informant que la copie a été effectuée avec succès ou fournissant des détails en cas d'erreur.
+
 > Quelles améliorations peut-on envisager ?
+
+Améliorations possibles :
+
+- Confirmation d'opération :
+
+Ajouter une confirmation visuelle pour les opérations sensibles telles que la suppression de fichiers. Avant d'effectuer une action destructive, demander à l'utilisateur de confirmer.
+
+- Support des chemins absolus :
+
+Améliorer la gestion des chemins absolus pour les commandes impliquant des fichiers ou des répertoires, offrant ainsi plus de flexibilité à l'utilisateur.
