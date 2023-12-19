@@ -12,6 +12,7 @@ target/
 *.jar
 *.war
 *.ear
+.vscode/
 
 # Fichiers de configuration Maven
 pom.xml.tag

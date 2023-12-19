@@ -1,2 +1,4 @@
 Malt " Directory Malt "" Directory Malt "
 File.txt " Fichier texte contient texte inutile "
+File-copy.txt 
+Fichier_1.txt " Fichier texte contient texte inutile "" Directory Malt "" Fichier texte contient texte inutile "" Directory Malt "" Fichier texte contient texte inutile "" Directory Malt "" Fichier texte contient texte inutile "" Directory Malt "" Fichier texte contient texte inutile "" Directory Malt "" Fichier texte contient texte inutile "" Directory Malt "
