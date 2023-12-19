@@ -71,6 +71,19 @@
     <build>
         <pluginManagement>
             <plugins>
+                <!-- Maven Wrapper -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-wrapper-plugin</artifactId>
+                    <version>${maven.wrapper.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>wrapper</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
                 <!-- Maven Clean Plugin -->
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -139,6 +152,7 @@
 
                 <!-- Maven Jacoco Plugin -->
                 <plugin>
+                    <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.8</version>
                     <executions>
@@ -159,6 +173,7 @@
 
                 <!-- Maven Checkstyle Plugin -->
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
                     <version>3.2.0</version>
                     <executions>
