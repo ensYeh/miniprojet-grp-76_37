@@ -19,9 +19,6 @@
         <maven.javadoc.plugin.version>3.1.0</maven.javadoc.plugin.version>
         <maven.site.plugin.version>3.7.1</maven.site.plugin.version>
         <maven.project.info.reports.plugin.version>3.0.0</maven.project.info.reports.plugin.version>
-        <maven.jacoco.plugin.version>0.8.8</maven.jacoco.plugin.version>
-        <maven.checkstyle.plugin.version>3.1.2</maven.checkstyle.plugin.version>
-        <maven.wrapper.version>3.12.0</maven.wrapper.version>
     </properties>
 
     <dependencies>
@@ -74,8 +71,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- Maven Wrapper -->
-
                 <!-- Maven Clean Plugin -->
                 <plugin>
                     <artifactId>maven-clean-plugin</artifactId>
@@ -144,7 +139,6 @@
 
                 <!-- Maven Jacoco Plugin -->
                 <plugin>
-                    <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>0.8.8</version>
                     <executions>
@@ -165,9 +159,8 @@
 
                 <!-- Maven Checkstyle Plugin -->
                 <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-checkstyle-plugin</artifactId>
-                    <version>3.1.2</version>
+                    <version>3.2.0</version>
                     <executions>
                         <execution>
                             <phase>validate</phase>
